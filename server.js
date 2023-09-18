@@ -1,8 +1,9 @@
 const express = require('express') ;
 const router = require("./routers/basic.router.js");
+const dotenv = require("dotenv");
 const app = express();
 
-
+dotenv.config();
 app.use(express.json());
 const PORT = 8080;
 

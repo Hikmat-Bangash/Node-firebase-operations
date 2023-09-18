@@ -121,3 +121,58 @@ try {
 }
 }
 
+exports.SubCollection = async (req, res) => {
+
+  const { email, name, qualification, phone } = req.body;
+  const id = email;
+  const id2 = phone;
+  const userData = {
+    email: email,
+    name: name,
+    qualification: qualification,
+    phone: phone
+  };
+  try {
+    // const response = await db.collection("users").add(userData); //when you want to generate firebase default id
+
+    //--- Note:  ------
+    const response = await db.collection("users").doc(id).collection("name").doc(id2).set(userData);
+    return res.json({
+      Data: response,
+      message: "Data is saved, check out firebase store",
+      status: 200,
+      success: true,
+    });
+  } catch (error) {
+    return res.json({
+      status: 500,
+      err: error.message,
+      message: "something went wrong!",
+    });
+  }
+
+
+};
+
+// ---------- retrieve sub-collections ----------
+exports.RetrieveSubCollections = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const usersRef = db.collection("users");
+    const response = await usersRef.get(email);
+    console.log(response)
+    const datalist = [];
+    response.forEach((doc) => {
+      datalist.push(doc.data());
+    });
+
+    console.log(datalist);
+    return res.json({ data: datalist, status: 200, success: true });
+  } catch (error) {
+    return res.json({
+      message: "something went wrong!",
+      status: 500,
+      err: error.message,
+    });
+  }
+}
